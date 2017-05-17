@@ -12,8 +12,8 @@
 var svgWidth = 1200;
 var svgHeight = 500;
 //dimensioni sottomarino
-var subWidth = 260;
-var subHeight = 300;
+var subWidth = 300;
+var subHeight = 260;
 
 //definisco svg
 var svg = d3.select("body")
@@ -33,16 +33,16 @@ var yellowSubmarine = svg.append("image")
 				.attr("width",subWidth)
 				.attr("height",subHeight)
 				.attr("y", svgHeight - subHeight)
-				.attr("x", svgWidth - subWidth)
-				.attr("xlink:href","submarine_v1.svg");
+				.attr("x", 0)
+				.attr("xlink:href","submarine_v2.svg");
 
 colorBubble = d3.rgb(209,238,238)
 function _playBubble(x){
 	//crea una bolla che si sposta verso 
 	//l'alto diventando sempre più grande
 	svg.append("circle")
-		.attr("cx",x)
-		.attr("cy",subHeight-50)
+		.attr("cx",x + 200)
+		.attr("cy",subHeight-20)
 		.attr("r",10)
 		.attr("fill",colorBubble)
 		.on("click", function(){
@@ -66,22 +66,23 @@ function _playSubmarine(){
 	_playBubble(x);
 	yellowSubmarine
 		.transition("playSubmarine")
-			.attr('x', function(d,i){
+			.attr('x', function(){
 					x = this.getAttribute("x");
-					if (x>0)
-						return x - 100;})
+					if (x<(svgWidth - subWidth))
+						return (parseInt(x) + 100);
+					})
 			.duration(500)
 			.ease('linear')
-			.each("end",function(d,i){
+			.each("end",function(){
 				 x = this.getAttribute("x");
-				 if(x>0){
+				 if(x<(svgWidth - subWidth)){
 					 //se non sono alla fine dell'area di disegno continua ad andare avanti
-					_playBubble(x);
+					_playBubble(parseInt(x));
 					_playSubmarine();
 				 }
 				 else{
 					 //essendo alla fine dell'area di disegno, reimposta x e ricomincia
-					 this.setAttribute("x", svgWidth - subWidth);
+					 this.setAttribute("x", 0);
 					 _playSubmarine();
 				 }
 			})
