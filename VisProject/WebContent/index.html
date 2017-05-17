@@ -12,7 +12,7 @@
 var svgWidth = 1200;
 var svgHeight = 500;
 //dimensioni sottomarino
-var subWidth = 300;
+var subWidth = 260;
 var subHeight = 300;
 
 //definisco svg
@@ -33,7 +33,7 @@ var yellowSubmarine = svg.append("image")
 				.attr("width",subWidth)
 				.attr("height",subHeight)
 				.attr("y", svgHeight - subHeight)
-				.attr("x", svgWidth - subWidth + 100)
+				.attr("x", svgWidth - subWidth)
 				.attr("xlink:href","submarine_v1.svg");
 
 colorBubble = d3.rgb(209,238,238)
@@ -81,7 +81,7 @@ function _playSubmarine(){
 				 }
 				 else{
 					 //essendo alla fine dell'area di disegno, reimposta x e ricomincia
-					 this.setAttribute("x", svgWidth - subWidth + 100);
+					 this.setAttribute("x", svgWidth - subWidth);
 					 _playSubmarine();
 				 }
 			})
