@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>InfoVis Project - Daniela Gezzi - mat.406007</title>
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+
+//dimensioni svg
+var svgWidth = 1200;
+var svgHeight = 500;
+//dimensioni sottomarino
+var subWidth = 300;
+var subHeight = 300;
+
+//definisco svg
+var svg = d3.select("body")
+				.append("svg")
+				.attr("width",svgWidth)
+				.attr("height",svgHeight);
+	
+//utilizzo uno sfondo blu per riprodurre il mare
+seaColor = d3.rgb(0,104,139);
+var sea = svg.append("rect")
+			.attr("width",svgWidth)
+			.attr("height",svgHeight)
+			.attr("fill",seaColor);
+
+//definisco il sottomarino
+var yellowSubmarine = svg.append("image")
+				.attr("width",subWidth)
+				.attr("height",subHeight)
+				.attr("y", svgHeight - subHeight)
+				.attr("x", svgWidth - subWidth + 100)
+				.attr("xlink:href","submarine_v1.svg");
+
+colorBubble = d3.rgb(209,238,238)
+function _playBubble(x){
+	//crea una bolla che si sposta verso 
+	//l'alto diventando sempre più grande
+	svg.append("circle")
+		.attr("cx",x)
+		.attr("cy",subHeight-50)
+		.attr("r",10)
+		.attr("fill",colorBubble)
+		.on("click", function(){
+			//le bolle scompaiono on click
+			d3.select(this)
+				.attr("visibility","hidden")
+		})
+		.transition("playBubble")
+			.attr("cy",function(d,i){return -100})
+			.attr("r", function(d,i){return 50})
+			.duration(9000)
+			.ease('linear')
+			.each("end", function(){
+				d3.select(this).remove()
+			})
+}
+
+function _playSubmarine(){
+	//muove il sottomarino da destra a sinistra ripetutamente
+	var x = d3.select("image").attr("x")
+	_playBubble(x);
+	yellowSubmarine
+		.transition("playSubmarine")
+			.attr('x', function(d,i){
+					x = this.getAttribute("x");
+					if (x>0)
+						return x - 100;})
+			.duration(500)
+			.ease('linear')
+			.each("end",function(d,i){
+				 x = this.getAttribute("x");
+				 if(x>0){
+					 //se non sono alla fine dell'area di disegno continua ad andare avanti
+					_playBubble(x);
+					_playSubmarine();
+				 }
+				 else{
+					 //essendo alla fine dell'area di disegno, reimposta x e ricomincia
+					 this.setAttribute("x", svgWidth - subWidth + 100);
+					 _playSubmarine();
+				 }
+			})
+}
+
+_playSubmarine();					
+						
+</script>
+
+</body>
+</html>
